@@ -350,6 +350,10 @@ public class RichInputMethodManager {
         return mCurrentRichInputMethodSubtype;
     }
 
+    public void setCurrentSubtype(RichInputMethodSubtype subtype) {
+        mCurrentRichInputMethodSubtype = subtype;
+    }
+
 
     public String getCombiningRulesExtraValueOfCurrentSubtype() {
         return SubtypeLocaleUtils.getCombiningRulesExtraValue(getCurrentSubtype().getRawSubtype());

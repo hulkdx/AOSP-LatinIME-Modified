@@ -23,6 +23,7 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.compat.InputMethodServiceCompatUtils;
 import com.android.inputmethod.event.Event;
@@ -34,6 +35,7 @@ import com.android.inputmethod.latin.InputView;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.RichInputMethodManager;
+import com.android.inputmethod.latin.RichInputMethodSubtype;
 import com.android.inputmethod.latin.WordComposer;
 import com.android.inputmethod.latin.define.ProductionFlags;
 import com.android.inputmethod.latin.settings.Settings;
@@ -45,6 +47,8 @@ import com.android.inputmethod.latin.utils.ResourceUtils;
 import com.android.inputmethod.latin.utils.ScriptUtils;
 
 import javax.annotation.Nonnull;
+
+import static com.android.inputmethod.latin.utils.SubtypeLocaleUtils.getSubtypeExtraValue;
 
 public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
     private static final String TAG = KeyboardSwitcher.class.getSimpleName();
@@ -115,6 +119,21 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         final int keyboardWidth = ResourceUtils.getDefaultKeyboardWidth(res);
         final int keyboardHeight = ResourceUtils.getKeyboardHeight(res, settingsValues);
         builder.setKeyboardGeometry(keyboardWidth, keyboardHeight);
+
+        String locale = "fi";
+        String subtypeExtraValue = getSubtypeExtraValue(locale);
+        InputMethodSubtype subtype1 = new InputMethodSubtype.InputMethodSubtypeBuilder()
+                .setIsAsciiCapable(subtypeExtraValue.contains("AsciiCapable"))
+                .setIsAuxiliary(false)
+                .setOverridesImplicitlyEnabledSubtype(false)
+                    .setSubtypeExtraValue(subtypeExtraValue)
+                .setSubtypeLocale(locale)
+                .setSubtypeMode("keyboard")
+                .build();
+        RichInputMethodSubtype subtype = new RichInputMethodSubtype(subtype1);
+
+        mRichImm.setCurrentSubtype(subtype);
+
         builder.setSubtype(mRichImm.getCurrentSubtype());
         builder.setVoiceInputKeyEnabled(settingsValues.mShowsVoiceInputKey);
         builder.setLanguageSwitchKeyEnabled(mLatinIME.shouldShowLanguageSwitchKey());

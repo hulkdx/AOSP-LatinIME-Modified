@@ -325,6 +325,20 @@ public final class SubtypeLocaleUtils {
         return sKeyboardLayoutToDisplayNameMap.get(layoutName);
     }
 
+    public static String getSubtypeExtraValue(String locale) {
+        for (Map.Entry<String, String> entry : sLocaleAndExtraValueToKeyboardLayoutSetMap.entrySet())
+        {
+            String key = entry.getKey();
+            String[] split = key.split(":");
+            String splitLocale = split[0];
+            if (splitLocale.equals(locale)) {
+                return split[1];
+            }
+
+        }
+        return "";
+    }
+
     @Nonnull
     public static String getKeyboardLayoutSetName(final InputMethodSubtype subtype) {
         String keyboardLayoutSet = subtype.getExtraValueOf(KEYBOARD_LAYOUT_SET);
