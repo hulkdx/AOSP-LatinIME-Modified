@@ -162,6 +162,12 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".LatinIME$KeyboardReceiver">
+            <intent-filter>
+                <action android:name="com.thehublet.intent.action.CHANGE_KEYBOARD_LOCALE" />
+            </intent-filter>
+        </receiver>
+
         <!-- Content providers -->
         <provider android:name="com.android.inputmethod.dictionarypack.DictionaryProvider"
                 android:grantUriPermissions="true"

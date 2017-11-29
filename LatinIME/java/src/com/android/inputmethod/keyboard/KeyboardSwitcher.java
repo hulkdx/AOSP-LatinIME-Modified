@@ -17,6 +17,7 @@
 package com.android.inputmethod.keyboard;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -111,6 +112,13 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         return false;
     }
 
+
+    private Context mContext;
+
+    public void setContext(Context ctx) {
+        mContext = ctx;
+    }
+
     public void loadKeyboard(final EditorInfo editorInfo, final SettingsValues settingsValues,
             final int currentAutoCapsState, final int currentRecapitalizeState) {
         final KeyboardLayoutSet.Builder builder = new KeyboardLayoutSet.Builder(
@@ -120,8 +128,16 @@ public final class KeyboardSwitcher implements KeyboardState.SwitchActions {
         final int keyboardHeight = ResourceUtils.getKeyboardHeight(res, settingsValues);
         builder.setKeyboardGeometry(keyboardWidth, keyboardHeight);
 
-        String locale = "fi";
+
+        SharedPreferences pref = mContext.getSharedPreferences(LatinIME.PREF_FILE_NAME, Context.MODE_PRIVATE);
+        String defaultValue = "en_GB";
+        // TODO check if locale is actually valid or otherwise set it to default.
+        String locale = pref.getString(LatinIME.PREF_LOCALE, defaultValue);
         String subtypeExtraValue = getSubtypeExtraValue(locale);
+        if (subtypeExtraValue.equals("")) {
+            locale = defaultValue;
+            subtypeExtraValue = "TrySuppressingImeSwitcher,AsciiCapable,SupportTouchPositionCorrection,EmojiCapable";
+        }
         InputMethodSubtype subtype1 = new InputMethodSubtype.InputMethodSubtypeBuilder()
                 .setIsAsciiCapable(subtypeExtraValue.contains("AsciiCapable"))
                 .setIsAuxiliary(false)
